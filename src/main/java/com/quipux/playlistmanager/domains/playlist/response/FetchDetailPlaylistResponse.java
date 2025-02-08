@@ -15,5 +15,4 @@ public class FetchDetailPlaylistResponse {
     private String name;
     private String description;
     private List<SongDTO> songs;
-    private Boolean isFoundedPlaylist;
 }

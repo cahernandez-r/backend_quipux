@@ -8,4 +8,6 @@ public interface PlaylistService {
     ListPlaylistResponse fetchAllPlaylist();
 
     FetchDetailPlaylistResponse fetchDetailPlaylist(String listName);
+
+    void deletePlaylist(String listName);
 }
