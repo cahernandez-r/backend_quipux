@@ -21,7 +21,7 @@ public class Song extends EntityPrincipal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id_song")
     private Long id;
 
     @Column(name = "title")
