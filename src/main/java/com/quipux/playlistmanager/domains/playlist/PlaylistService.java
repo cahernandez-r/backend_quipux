@@ -1,6 +1,7 @@
 package com.quipux.playlistmanager.domains.playlist;
 
 import com.quipux.playlistmanager.domains.playlist.request.CreatePlayListRequest;
+import com.quipux.playlistmanager.domains.playlist.response.CreatePlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
 
@@ -12,5 +13,5 @@ public interface PlaylistService {
 
     void deletePlaylist(String listName);
 
-    FetchDetailPlaylistResponse createPlayList(CreatePlayListRequest request);
+    CreatePlaylistResponse createPlayList(CreatePlayListRequest request);
 }

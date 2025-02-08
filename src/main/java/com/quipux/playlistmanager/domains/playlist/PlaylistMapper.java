@@ -6,6 +6,7 @@ import com.quipux.playlistmanager.common.entities.Playlist;
 import com.quipux.playlistmanager.common.entities.Song;
 import com.quipux.playlistmanager.domains.playlist.dto.SongDTO;
 import com.quipux.playlistmanager.domains.playlist.request.CreatePlayListRequest;
+import com.quipux.playlistmanager.domains.playlist.response.CreatePlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,6 +22,19 @@ public interface PlaylistMapper {
             @Mapping(source = "description", target = "description")
     })
     FetchDetailPlaylistResponse playlistToPlaylistDTO(Playlist playlist);
+
+    @Mappings({
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "description", target = "description")
+    })
+    CreatePlaylistResponse playlistToCreatePlaylistResponse(Playlist playlist);
+
+    @Mappings({
+            @Mapping(source = "title", target = "title"),
+            @Mapping(source = "album.description", target = "album"),
+            @Mapping(source = "genre.description", target = "genre")
+    })
+    SongDTO songToSongDTO(Song song);
 
     @Mappings({
             @Mapping(source = "title", target = "title"),

@@ -11,15 +11,16 @@ import com.quipux.playlistmanager.common.repositories.PlaylistSongRepository;
 import com.quipux.playlistmanager.common.repositories.SongRepository;
 import com.quipux.playlistmanager.domains.playlist.dto.SongDTO;
 import com.quipux.playlistmanager.domains.playlist.request.CreatePlayListRequest;
+import com.quipux.playlistmanager.domains.playlist.response.CreatePlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,7 +72,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     @Transactional
-    public FetchDetailPlaylistResponse createPlayList(final CreatePlayListRequest request) {
+    public CreatePlaylistResponse createPlayList(final CreatePlayListRequest request) {
         final Boolean nameIsInvalid = request.name() == null ||request.name().isBlank();
         final Boolean descriptionIsInvalid = request.description() == null ||request.description().isBlank();
         if (nameIsInvalid || descriptionIsInvalid) {
@@ -80,11 +81,15 @@ public class PlaylistServiceImpl implements PlaylistService {
         Playlist playlist = playlistMapper.playlistDTOToPlaylist(request);
         playListRepository.save(playlist);
 
-        relatePlaylistSongs(request.idSongs(), playlist);
-        return fetchDetailPlaylist(playlist.getName());
+        final CreatePlaylistResponse response = playlistMapper.playlistToCreatePlaylistResponse(playlist);
+
+        List<SongDTO> songs =relatePlaylistSongs(request.idSongs(), playlist);
+        response.setSongs(songs);
+        return response;
     }
 
-    private void relatePlaylistSongs(final List<Long> idSongs, final Playlist playlist) {
+    private List<SongDTO> relatePlaylistSongs(final List<Long> idSongs, final Playlist playlist) {
+        List<SongDTO> songDTOS = new ArrayList<>();
         idSongs.forEach(idSong -> {
             Optional<Song> opSong = songRepository.findByIdAndActiveTrue(idSong);
             if (opSong.isEmpty()) {
@@ -94,6 +99,8 @@ public class PlaylistServiceImpl implements PlaylistService {
             playlistSong.setSong(opSong.get());
             playlistSong.setPlaylist(playlist);
             playlistSongRepository.save(playlistSong);
-        });
+            songDTOS.add(playlistMapper.songToSongDTO(opSong.get()));
+;        });
+        return  songDTOS;
     }
 }
