@@ -7,14 +7,21 @@ import com.quipux.playlistmanager.common.entities.general.EntityPrincipal;
 import com.quipux.playlistmanager.common.exceptions.PlayListNotFoundException;
 import com.quipux.playlistmanager.common.projections.PlaylistProjection;
 import com.quipux.playlistmanager.common.repositories.PlayListRepository;
+import com.quipux.playlistmanager.common.repositories.PlaylistSongRepository;
+import com.quipux.playlistmanager.common.repositories.SongRepository;
 import com.quipux.playlistmanager.domains.playlist.dto.SongDTO;
+import com.quipux.playlistmanager.domains.playlist.request.CreatePlayListRequest;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +29,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private final PlayListRepository playListRepository;
     private final PlaylistMapper playlistMapper;
+    private final PlaylistSongRepository playlistSongRepository;
+    private final SongRepository songRepository;
 
     @Override
     public ListPlaylistResponse fetchAllPlaylist() {
@@ -58,5 +67,33 @@ public class PlaylistServiceImpl implements PlaylistService {
         final Playlist playlist = playListRepository.findByNameAndActiveTrue(listName)
                 .orElseThrow(PlayListNotFoundException::new);
         playlist.setActive(Boolean.FALSE);
+    }
+
+    @Override
+    @Transactional
+    public FetchDetailPlaylistResponse createPlayList(final CreatePlayListRequest request) {
+        final Boolean nameIsInvalid = request.name() == null ||request.name().isBlank();
+        final Boolean descriptionIsInvalid = request.description() == null ||request.description().isBlank();
+        if (nameIsInvalid || descriptionIsInvalid) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The name or description is not valid");
+        }
+        Playlist playlist = playlistMapper.playlistDTOToPlaylist(request);
+        playListRepository.save(playlist);
+
+        relatePlaylistSongs(request.idSongs(), playlist);
+        return fetchDetailPlaylist(playlist.getName());
+    }
+
+    private void relatePlaylistSongs(final List<Long> idSongs, final Playlist playlist) {
+        idSongs.forEach(idSong -> {
+            Optional<Song> opSong = songRepository.findByIdAndActiveTrue(idSong);
+            if (opSong.isEmpty()) {
+                return;
+            }
+            PlaylistSong playlistSong = new PlaylistSong();
+            playlistSong.setSong(opSong.get());
+            playlistSong.setPlaylist(playlist);
+            playlistSongRepository.save(playlistSong);
+        });
     }
 }

@@ -5,6 +5,7 @@ import com.quipux.playlistmanager.common.entities.Genre;
 import com.quipux.playlistmanager.common.entities.Playlist;
 import com.quipux.playlistmanager.common.entities.Song;
 import com.quipux.playlistmanager.domains.playlist.dto.SongDTO;
+import com.quipux.playlistmanager.domains.playlist.request.CreatePlayListRequest;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,6 +28,12 @@ public interface PlaylistMapper {
             @Mapping(source = "genre.description", target = "genre")
     })
     List<SongDTO> songsToSongDTOs(List<Song> songs);
+
+    @Mappings({
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "description", target = "description")
+    })
+    Playlist playlistDTOToPlaylist(CreatePlayListRequest request);
 
     default String map(Album album) {
         return album != null ? album.getDescription() : null;
