@@ -1,5 +1,6 @@
 package com.quipux.playlistmanager.common.entities;
 
+import com.quipux.playlistmanager.common.entities.general.EntityPrincipal;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +17,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "tbl_playlist_song")
-public class PlaylistSong {
+public class PlaylistSong extends EntityPrincipal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
