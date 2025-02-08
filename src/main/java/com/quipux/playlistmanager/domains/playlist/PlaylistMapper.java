@@ -1,4 +1,4 @@
-package com.quipux.playlistmanager.playlist;
+package com.quipux.playlistmanager.domains.playlist;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

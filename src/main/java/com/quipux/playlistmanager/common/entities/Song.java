@@ -26,8 +26,8 @@ public class Song {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "year")
-    private int year;
+    @Column(name = "releaseYear")
+    private String year;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_album")
