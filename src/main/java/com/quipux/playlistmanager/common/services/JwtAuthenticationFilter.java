@@ -22,12 +22,13 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    public static final int BEGIN_INDEX = 7;
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailService userService;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
+    protected void doFilterInternal(@NonNull final HttpServletRequest request,
+                                    @NonNull final HttpServletResponse response, @NonNull final FilterChain filterChain)
             throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -37,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
+        jwt = authHeader.substring(BEGIN_INDEX);
         userEmail = jwtTokenProvider.getUsername(jwt);
         if (StringUtils.hasText(userEmail)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {

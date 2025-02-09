@@ -1,7 +1,6 @@
 package com.quipux.playlistmanager.domains.auth;
 
 import com.quipux.playlistmanager.common.entities.User;
-import com.quipux.playlistmanager.common.exceptions.PlayListNotFoundException;
 import com.quipux.playlistmanager.common.repositories.UserRepository;
 import com.quipux.playlistmanager.config.JwtTokenProvider;
 import com.quipux.playlistmanager.domains.auth.request.LoginRequest;
@@ -11,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +27,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
@@ -42,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse login(final LoginRequest request) {
         User user = userRepository.findUserByEmailAndActiveTrue(request.getEmail())
-                .orElseThrow(()-> new AccessDeniedException("User not found"));
+                .orElseThrow(() -> new AccessDeniedException("User not found"));
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var jwt = jwtService.createToken(user);

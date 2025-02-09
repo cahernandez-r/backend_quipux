@@ -11,4 +11,6 @@ public final class Route {
     public static final String LISTS_DETAIL = "{listName}";
 
     public static final String LISTS_DELETE = "{listName}";
+
+    public static final String VALIDATE_EXIST = "{listName}/exists";
 }

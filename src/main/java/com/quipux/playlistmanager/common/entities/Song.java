@@ -31,7 +31,7 @@ public class Song extends EntityPrincipal {
     private String artist;
 
     @Column(name = "release_year")
-    private String year;
+    private Integer year;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_album")

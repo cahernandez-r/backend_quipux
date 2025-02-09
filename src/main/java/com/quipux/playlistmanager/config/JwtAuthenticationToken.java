@@ -10,7 +10,7 @@ public class JwtAuthenticationToken extends UsernamePasswordAuthenticationToken 
 
     private final String token;
 
-    public JwtAuthenticationToken(String token) {
+    public JwtAuthenticationToken(final String token) {
         super(null, null);
         this.token = token;
         setAuthenticated(false);

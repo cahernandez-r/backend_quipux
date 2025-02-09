@@ -12,6 +12,7 @@ import com.quipux.playlistmanager.common.repositories.SongRepository;
 import com.quipux.playlistmanager.domains.playlist.dto.SongDTO;
 import com.quipux.playlistmanager.domains.playlist.request.CreatePlayListRequest;
 import com.quipux.playlistmanager.domains.playlist.response.CreatePlaylistResponse;
+import com.quipux.playlistmanager.domains.playlist.response.ExistsPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
 import jakarta.transaction.Transactional;
@@ -73,8 +74,8 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     @Transactional
     public CreatePlaylistResponse createPlayList(final CreatePlayListRequest request) {
-        final Boolean nameIsInvalid = request.name() == null ||request.name().isBlank();
-        final Boolean descriptionIsInvalid = request.description() == null ||request.description().isBlank();
+        final Boolean nameIsInvalid = request.name() == null || request.name().isBlank();
+        final Boolean descriptionIsInvalid = request.description() == null || request.description().isBlank();
         if (nameIsInvalid || descriptionIsInvalid) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The name or description is not valid");
         }
@@ -83,9 +84,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         final CreatePlaylistResponse response = playlistMapper.playlistToCreatePlaylistResponse(playlist);
 
-        List<SongDTO> songs =relatePlaylistSongs(request.idSongs(), playlist);
+        List<SongDTO> songs = relatePlaylistSongs(request.idSongs(), playlist);
         response.setSongs(songs);
         return response;
+    }
+
+    @Override
+    public ExistsPlaylistResponse existsPlaylist(final String listName) {
+        Optional<Playlist> opPlaylist = playListRepository.findByNameAndActiveTrue(listName);
+        return ExistsPlaylistResponse
+                .builder()
+                .existsPlayList(opPlaylist.isPresent())
+                .build();
     }
 
     private List<SongDTO> relatePlaylistSongs(final List<Long> idSongs, final Playlist playlist) {
@@ -100,7 +110,7 @@ public class PlaylistServiceImpl implements PlaylistService {
             playlistSong.setPlaylist(playlist);
             playlistSongRepository.save(playlistSong);
             songDTOS.add(playlistMapper.songToSongDTO(opSong.get()));
-;        });
+        });
         return  songDTOS;
     }
 }
