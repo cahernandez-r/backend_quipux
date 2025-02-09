@@ -5,10 +5,11 @@ import com.quipux.playlistmanager.domains.playlist.response.CreatePlaylistRespon
 import com.quipux.playlistmanager.domains.playlist.response.ExistsPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
+import org.springframework.data.domain.Pageable;
 
 public interface PlaylistService {
 
-    ListPlaylistResponse fetchAllPlaylist();
+    ListPlaylistResponse fetchAllPlaylist(Pageable pageable);
 
     FetchDetailPlaylistResponse fetchDetailPlaylist(String listName);
 

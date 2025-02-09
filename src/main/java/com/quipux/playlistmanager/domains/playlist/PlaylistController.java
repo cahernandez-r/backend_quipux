@@ -5,7 +5,9 @@ import com.quipux.playlistmanager.domains.playlist.response.CreatePlaylistRespon
 import com.quipux.playlistmanager.domains.playlist.response.ExistsPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistResponse;
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -27,12 +30,12 @@ public class PlaylistController {
     private final PlaylistService playlistService;
 
     @GetMapping
-    public ResponseEntity<ListPlaylistResponse> fetchAllPlaylist() {
-        return ResponseEntity.ok(playlistService.fetchAllPlaylist());
+    public ResponseEntity<ListPlaylistResponse> fetchAllPlaylist(@RequestParam final int pageNumber, @RequestParam final int pageSize) {
+        return ResponseEntity.ok(playlistService.fetchAllPlaylist(PageRequest.of(pageNumber, pageSize)));
     }
 
     @PostMapping
-    public ResponseEntity<CreatePlaylistResponse> createPlaylist(@RequestBody final CreatePlayListRequest request) {
+    public ResponseEntity<CreatePlaylistResponse> createPlaylist(@RequestBody @Valid final CreatePlayListRequest request) {
         CreatePlaylistResponse response = playlistService.createPlayList(request);
         return ResponseEntity.created(URI.create(String.format("lists/%d", response.getId()))).body(response);
     }

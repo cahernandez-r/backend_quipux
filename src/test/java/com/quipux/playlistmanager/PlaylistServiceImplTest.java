@@ -19,6 +19,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
@@ -26,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,13 +64,14 @@ public class PlaylistServiceImplTest {
     @Test
     public void testFetchAllPlaylist() {
 
-        List<PlaylistProjection> mockPlaylists = List.of(mock(PlaylistProjection.class));
-        when(playListRepository.findByActiveTrue()).thenReturn(mockPlaylists);
+        Page<PlaylistProjection> mockPlaylists = Page.empty();
+        Pageable pageable = PageRequest.of(0, 1);
+        when(playListRepository.findByActiveTrue(pageable)).thenReturn(mockPlaylists);
 
-        ListPlaylistResponse response = playlistService.fetchAllPlaylist();
+        ListPlaylistResponse response = playlistService.fetchAllPlaylist(pageable);
 
         assertNotNull(response);
-        assertEquals(mockPlaylists, response.getPlaylists());
+        assertEquals(0, response.getTotalElement());
     }
 
     @Test

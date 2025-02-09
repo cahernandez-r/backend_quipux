@@ -17,6 +17,8 @@ import com.quipux.playlistmanager.domains.playlist.response.FetchDetailPlaylistR
 import com.quipux.playlistmanager.domains.playlist.response.ListPlaylistResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,13 +37,16 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final SongRepository songRepository;
 
     @Override
-    public ListPlaylistResponse fetchAllPlaylist() {
-        final List<PlaylistProjection> playlists = playListRepository.findByActiveTrue();
-
-        return ListPlaylistResponse
+    public ListPlaylistResponse fetchAllPlaylist(final Pageable pageable) {
+        final Page<PlaylistProjection> page = playListRepository.findByActiveTrue(pageable);
+        ListPlaylistResponse response = ListPlaylistResponse
                 .builder()
-                .playlists(playlists)
+                .playlists(page.getContent())
                 .build();
+        response.setPageNumber(page.getNumber());
+        response.setPageNumber(page.getSize());
+        response.setTotalElement(page.getTotalElements());
+        return response;
     }
 
     @Override
