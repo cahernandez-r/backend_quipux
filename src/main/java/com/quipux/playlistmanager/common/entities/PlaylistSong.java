@@ -21,14 +21,14 @@ public class PlaylistSong extends EntityPrincipal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_playlist_song")
+    @Column(name = "id_playlist_song", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_playlist")
+    @JoinColumn(name = "id_playlist", nullable = false)
     private Playlist playlist;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_song")
+    @JoinColumn(name = "id_song", nullable = false)
     private Song song;
 }

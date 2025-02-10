@@ -21,23 +21,23 @@ public class Song extends EntityPrincipal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_song")
+    @Column(name = "id_song", nullable = false)
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @Column(name = "artist")
+    @Column(name = "artist", length = 50)
     private String artist;
 
     @Column(name = "release_year")
     private Integer year;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_album")
+    @JoinColumn(name = "id_album", nullable = false)
     private Album album;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_genre")
+    @JoinColumn(name = "id_genre", nullable = false)
     private Genre genre;
 }

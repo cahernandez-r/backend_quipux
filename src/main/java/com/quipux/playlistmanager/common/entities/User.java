@@ -28,13 +28,13 @@ public class User extends EntityPrincipal implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
+    @Column(name = "id_user", nullable = false)
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, length = 30)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false, length = 200)
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)

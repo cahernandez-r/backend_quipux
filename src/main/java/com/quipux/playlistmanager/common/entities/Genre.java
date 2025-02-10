@@ -21,12 +21,12 @@ public class Genre extends EntityPrincipal {
     @Column(name = "id_genre")
     private Long id;
 
-    @Column(name = "code")
+    @Column(name = "code", nullable = false, length = 50)
     private String code;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false, length = 200)
     private String description;
 }

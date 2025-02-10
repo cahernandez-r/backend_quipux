@@ -18,18 +18,18 @@ public class Album extends EntityPrincipal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_album")
+    @Column(name = "id_album", nullable = false)
     private Long id;
 
-    @Column(name = "code")
+    @Column(name = "code", nullable = false, length = 20)
     private String code;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 50)
     private String title;
 
-    @Column(name = "artist")
+    @Column(name = "artist", length = 50)
     private String artist;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false, length = 200)
     private String description;
 }
